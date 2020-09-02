@@ -31,13 +31,34 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
+    open: false, // 解决run dev 打开2个tab
     overlay: {
       warnings: false,
       errors: true
     },
+    // proxy: 'http://localhost:8080',
+    proxy: {
+      '/dev-api/aix': { // 配置的变量
+        // target: 'http://localhost:8080/aix', // 需要请求的第三方接口
+        target: 'http://10.214.211.207:8080/aix', // 需要请求的第三方接口
+        changeOrigin: true, // 在本地会创建一个虚拟服务器，然后发送请求，并同时接收请求，这样服务端和服务端进行交互就不会有跨域问题
+        pathRewrite: { // 这里重写路径，如果test本身不存在接口路径中，一定要写成空！！！
+          '^/dev-api/aix': '/'
+        },
+        ws: false
+      }
+    },
     before: require('./mock/mock-server.js')
   },
+  // proxyTable: {
+  //   '/api': {
+  //     target: process.env.VUE_APP_BASE_API, // 设置你调用的接口域名和端口号 别忘了加http
+  //     changeOrigin: true,
+  //     pathRewrite: {
+  //       '^/api': 'http://localhost:8080' // 用’/api’来代替target中的地址,以后再调用接口,比如http://testapi.tvm.com.cn/some/getsome那么就直接写 ‘/api/some/getsome’
+  //     }
+  //   }
+  // },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
@@ -92,35 +113,36 @@ module.exports = {
           config
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
-            .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
-              inline: /runtime\..*\.js$/
-            }])
+            .use('script-ext-html-webpack-plugin', [
+              {
+                // `runtime` must same as runtimeChunk name. default is `runtime`
+                inline: /runtime\..*\.js$/
+              }])
             .end()
           config
             .optimization.splitChunks({
-              chunks: 'all',
-              cacheGroups: {
-                libs: {
-                  name: 'chunk-libs',
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: 10,
-                  chunks: 'initial' // only package third parties that are initially dependent
-                },
-                elementUI: {
-                  name: 'chunk-elementUI', // split elementUI into a single package
-                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-                },
-                commons: {
-                  name: 'chunk-commons',
-                  test: resolve('src/components'), // can customize your rules
-                  minChunks: 3, //  minimum common number
-                  priority: 5,
-                  reuseExistingChunk: true
-                }
+            chunks: 'all',
+            cacheGroups: {
+              libs: {
+                name: 'chunk-libs',
+                test: /[\\/]node_modules[\\/]/,
+                priority: 10,
+                chunks: 'initial' // only package third parties that are initially dependent
+              },
+              elementUI: {
+                name: 'chunk-elementUI', // split elementUI into a single package
+                priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+              },
+              commons: {
+                name: 'chunk-commons',
+                test: resolve('src/components'), // can customize your rules
+                minChunks: 3, //  minimum common number
+                priority: 5,
+                reuseExistingChunk: true
               }
-            })
+            }
+          })
           config.optimization.runtimeChunk('single')
         }
       )

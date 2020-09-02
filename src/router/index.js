@@ -47,12 +47,13 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: 'Dashboard', icon: 'dashboard' }
+      }]
   },
 
   {
@@ -60,13 +61,13 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/example/table',
     name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    meta: { title: '容器信息', icon: 'example' },
     children: [
       {
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: '活动容器列表', icon: 'table' }
       },
       {
         path: 'tree',
@@ -153,10 +154,16 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'http://10.214.211.205:5601/app/metrics/detail/host/VIPA207',
+        meta: { title: 'ES服务器监控', icon: 'link' }
       }
     ]
+  },
+  // 'https://panjiachen.github.io/vue-element-admin-site/#/',
+
+  {
+    path: '/detail/:token',
+    component: () => import('@/views/client/cli-detail')
   },
 
   // 404 page must be placed at the end !!!
