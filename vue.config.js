@@ -38,21 +38,12 @@ module.exports = {
     },
     // proxy: 'http://localhost:8080',
     proxy: {
-      // '/dev-api/aix': { // 配置的变量
-      //   // target: 'http://localhost:8081/aix', // 需要请求的第三方接口
-      //   target: 'http://10.214.211.207:8081/aix', // 需要请求的第三方接口
-      //   changeOrigin: true, // 在本地会创建一个虚拟服务器，然后发送请求，并同时接收请求，这样服务端和服务端进行交互就不会有跨域问题
-      //   pathRewrite: { // 这里重写路径，如果test本身不存在接口路径中，一定要写成空！！！
-      //     '^/dev-api/aix': '/'
-      //   },
-      //   ws: false
-      // },
-      '/prod-api/aix': { // 配置的变量
+      '/dev-api/aix': { // 配置的变量
         // target: 'http://localhost:8081/aix', // 需要请求的第三方接口
         target: 'http://10.214.211.207:8081/aix', // 需要请求的第三方接口
         changeOrigin: true, // 在本地会创建一个虚拟服务器，然后发送请求，并同时接收请求，这样服务端和服务端进行交互就不会有跨域问题
         pathRewrite: { // 这里重写路径，如果test本身不存在接口路径中，一定要写成空！！！
-          '^/prod-api/aix': '/'
+          '^/dev-api/aix': '/'
         },
         ws: false
       }
