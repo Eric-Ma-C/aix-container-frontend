@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import Qs from 'qs'
 
 const base_url = '/aix/client'
 
@@ -34,7 +34,7 @@ export function getClientMsgQueue(token) {
 
 export function getClientTask(token) {
   return request({
-    url: base_url + '/task',
+    url: base_url + '/task-info',
     params: { token },
     method: 'get'
   })
@@ -60,5 +60,23 @@ export function clientLogReadLine() {
   return request({
     url: base_url + '/log/line',
     method: 'get'
+  })
+}
+
+export function stopTask(token) {
+  return request({
+    url: base_url + '/task',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    data: {
+      token: token,
+      action: 'stop'
+    },
+    transformRequest: [
+      function(data) {
+        // 在请求之前对data传参进行格式转换
+        data = Qs.stringify(data)
+        return data
+      }]
   })
 }

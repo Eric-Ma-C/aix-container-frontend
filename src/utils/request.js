@@ -13,7 +13,7 @@ const service = axios.create({
   // withCredentials:true
 })
 
-// request interceptor
+// request interceptor 请求拦截器
 service.interceptors.request.use(
   config => {
     // do something before request is sent

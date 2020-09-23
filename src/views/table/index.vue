@@ -60,7 +60,13 @@
 
       <el-table-column align="center" label="详情" width="105">
         <template slot-scope="scope">
-          <el-button type="primary" @click="jumpToDetail(scope.row.token)">点击</el-button>
+          <el-button type="primary" @click="jumpToDetail(scope.row.token)">管理</el-button>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="操作" width="105">
+        <template slot-scope="scope">
+          <el-button type="primary" @click="stopTask(scope.row.token)">终止任务</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -104,6 +110,9 @@ export default {
       this.$router.push({
         path: `/detail/${token}`
       })
+    },
+    stopTask(token) {
+      client_api.stopTask(token)
     }
   }
 }
