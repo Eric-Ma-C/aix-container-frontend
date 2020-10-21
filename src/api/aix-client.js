@@ -64,19 +64,27 @@ export function clientLogReadLine() {
 }
 
 export function stopTask(token) {
-  return request({
-    url: base_url + '/task',
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    data: {
+  // return request({
+  //   url: base_url + '/task',
+  //   method: 'post',
+  //   // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  //   // headers: { 'Content-Type': 'application/json' },
+  //   // transformRequest: [
+  //   //   function(data) {
+  //   //     // 在请求之前对data传参进行格式转换
+  //   //     data = Qs.stringify(data)
+  //   //     return data
+  //   //   }],
+  //   data: {
+  //     token: token,
+  //     action: 'stop'
+  //   }
+  // })
+
+  return request.post(
+    base_url + '/task',
+    {
       token: token,
       action: 'stop'
-    },
-    transformRequest: [
-      function(data) {
-        // 在请求之前对data传参进行格式转换
-        data = Qs.stringify(data)
-        return data
-      }]
-  })
+    })
 }

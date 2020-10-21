@@ -45,7 +45,7 @@
             placement="right"
             width="100%"
             trigger="hover">
-            <el-table :data="scope.row.taskBriefInfoList" >
+            <el-table :data="scope.row.taskBriefInfoList">
               <el-table-column prop="name" label="名称" width="200"></el-table-column>
               <el-table-column prop="type" label="类型" width="100"></el-table-column>
               <el-table-column prop="accessType" label="权限" width="100"></el-table-column>
@@ -60,16 +60,33 @@
 
       <el-table-column align="center" label="详情" width="105">
         <template slot-scope="scope">
-          <el-button type="primary" @click="jumpToDetail(scope.row.token)">管理</el-button>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="操作" width="105">
-        <template slot-scope="scope">
-          <el-button type="primary" @click="stopTask(scope.row.token)">终止任务</el-button>
+          <el-button type="primary" @click="jumpToManageDialog(scope.row)">管理</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <el-dialog
+      :title="dialogDeviceInfo.name"
+      :visible.sync="dialogVisible"
+      width="70%"
+      :before-close="handleClose">
+      <h3>任务详情</h3>
+      <el-table :data="dialogDeviceInfo.taskBriefInfoList">
+        <el-table-column prop="name" label="名称" width="200"></el-table-column>
+        <el-table-column prop="type" label="类型" width="100"></el-table-column>
+        <el-table-column prop="accessType" label="权限" width="100"></el-table-column>
+        <el-table-column prop="info" label="简介" width="250"></el-table-column>
+        <el-table-column prop="createdTime" label="创建时间" width="230"></el-table-column>
+        <el-table-column prop="status" label="状态" width="100"></el-table-column>
+      </el-table>
+      <el-button v-if="dialogDeviceInfo.taskBriefInfoList.length > 0" type="primary"
+                 @click="stopTask(dialogDeviceInfo.token)">终止任务
+      </el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -92,6 +109,8 @@ export default {
   data() {
     return {
       list: null,
+      dialogVisible: false,
+      dialogDeviceInfo: { name: 'unknown', taskBriefInfoList: [] },
       listLoading: true
     }
   },
@@ -106,13 +125,26 @@ export default {
         this.listLoading = false
       })
     },
-    jumpToDetail(token) {
-      this.$router.push({
-        path: `/detail/${token}`
-      })
+    jumpToManageDialog(deviceInfo) {
+      this.dialogVisible = true
+      this.dialogDeviceInfo = deviceInfo
+      // this.$router.push({
+      //   path: `/detail/${token}`
+      // })
+    },
+    handleClose(done) {// close dialog
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
     },
     stopTask(token) {
-      client_api.stopTask(token)
+      this.$confirm('确认终止？')
+        .then(_ => {
+          client_api.stopTask(token)
+        })
+        .catch(_ => {})
     }
   }
 }

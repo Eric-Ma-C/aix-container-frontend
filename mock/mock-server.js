@@ -9,7 +9,11 @@ function registerRoutes(app) {
   let mockLastIndex
   const { default: mocks } = require('./index.js')
   for (const mock of mocks) {
-    app[mock.type](mock.url, mock.response)
+    // app[mock.type](mock.url, mock.response)
+    // https://github.com/PanJiaChen/vue-element-admin/issues/3020
+    app[mock.type](mock.url, bodyParser.json(), bodyParser.urlencoded({
+      extended: true
+    }), mock.response)
     mockLastIndex = app._router.stack.length
   }
   const mockRoutesLength = Object.keys(mocks).length
@@ -33,10 +37,11 @@ module.exports = app => {
 
   // parse app.body
   // https://expressjs.com/en/4x/api.html#req.body
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({
-    extended: true
-  }))
+  // app.use(bodyParser.json())
+  // app.use(bodyParser.urlencoded({
+  //   extended: true
+  // }))
+  // https://github.com/PanJiaChen/vue-element-admin/issues/3020
 
   const mockRoutes = registerRoutes(app)
   var mockRoutesLength = mockRoutes.mockRoutesLength
@@ -59,7 +64,8 @@ module.exports = app => {
         mockRoutesLength = mockRoutes.mockRoutesLength
         mockStartIndex = mockRoutes.mockStartIndex
 
-        console.log(chalk.magentaBright(`\n > Mock Server hot reload success! changed  ${path}`))
+        console.log(chalk.magentaBright(
+          `\n > Mock Server hot reload success! changed  ${path}`))
       } catch (error) {
         console.log(chalk.redBright(error))
       }
