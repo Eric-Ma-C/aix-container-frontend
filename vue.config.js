@@ -66,6 +66,7 @@ module.exports = {
     resolve: {
       alias: {
         '@': resolve('src')
+        // 'clipboard': resolve('https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js')
       }
     }
   },
