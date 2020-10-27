@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <h1>Client列表</h1>
-    <el-button type="primary" @click="fetchData">刷新</el-button>
+    <el-button type="primary" @click="fetchData">立即刷新</el-button>
     <br>
     <br>
 
@@ -78,6 +78,13 @@
           <el-link class="copyBtn" style="font-size: 17px; " :data-clipboard-text="dialogDeviceInfo.token">复制</el-link>
         </div>
       </div>
+      <div style="display: flex">
+        <div style="margin-right: 5px; font-size: 17px; ">执行指令:</div>
+        <div style="width: 60%; font-size: 17px; color: darkred;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{
+            dialogDeviceInfo.runningCmds
+          }}
+        </div>
+      </div>
       <h3>任务详情</h3>
       <el-table :data="dialogDeviceInfo.taskBriefInfoList">
         <el-table-column prop="name" label="名称" width="200"/>
@@ -106,7 +113,6 @@
 // import { getList } from '@/api/table'
 import * as client_api from '../../api/aix-client'
 // import * as server_api from '../../api/aix-server'
-
 import ClipboardJS from 'clipboard'
 
 export default {
@@ -123,15 +129,27 @@ export default {
   data() {
     return {
       list: null,
+      autoRefreshTimer: null,
+      closeWaitingTimer: null,
       dialogVisible: false,
-      dialogDeviceInfo: { name: 'unknown', taskBriefInfoList: [] },
+      dialogDeviceInfo: { name: 'unknown', runningCmds: 'N/A', taskBriefInfoList: [] },
       listLoading: true
     }
   },
   created() {
-    this.fetchData()
+    // 每次进入界面时，先清除之前的所有定时器，然后启动新的定时器
+    this.clearTimer()
+    this.setTimer()
+
+    this.listLoading = true
+    client_api.getClientList().then(response => {
+      this.list = response.data.items
+      this.listLoading = false
+    })
+
     const win = this
 
+    // 定义复制按钮
     const btn = new ClipboardJS('.copyBtn')
     btn.on('success', function(e) {
       console.info('Action:', e.action)
@@ -141,13 +159,29 @@ export default {
       e.clearSelection()
     })
   },
+  destroyed: function() {
+    // 每次离开当前界面时，清除定时器
+    this.clearTimer()
+  },
   methods: {
     fetchData() {
-      this.listLoading = true
+      // this.listLoading = true
       client_api.getClientList().then(response => {
         this.list = response.data.items
-        this.listLoading = false
+        // this.listLoading = false
       })
+    },
+    setTimer() {
+      if (this.autoRefreshTimer === null) {
+        this.autoRefreshTimer = setInterval(() => {
+          // console.log('开始定时...每过10秒执行一次')
+          this.fetchData()
+        }, 10000)
+      }
+    },
+    clearTimer() {
+      clearInterval(this.autoRefreshTimer)
+      this.autoRefreshTimer = null
     },
     jumpToManageDialog(deviceInfo) {
       this.dialogVisible = true
@@ -167,8 +201,37 @@ export default {
       this.$confirm('确认终止？')
         .then(_ => {
           client_api.stopTask(token)
+          this.fullScreenWaiting(token)
         })
         .catch(_ => {})
+    },
+    fullScreenWaiting(token) {
+      const loading = this.$loading({
+        lock: true,
+        text: '正在停止，请稍后...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      if (this.closeWaitingTimer === null) {
+        this.closeWaitingTimer = setInterval(() => {
+          let task
+          client_api.getClientTask(token).then(response => {
+            task = response.data
+            if (task === null) {
+              this.fetchData()
+              this.dialogDeviceInfo.runningCmds = ''
+              this.dialogDeviceInfo.taskBriefInfoList = []
+              loading.close()
+              clearInterval(this.closeWaitingTimer)
+              this.closeWaitingTimer = null
+              this.$message({
+                message: '任务已停止',
+                type: 'success'
+              })
+            }
+          })
+        }, 2000)
+      }
     },
     copySuccess() {
       this.$message({

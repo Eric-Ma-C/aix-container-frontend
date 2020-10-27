@@ -1,12 +1,12 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">User: {{ name }}</div>
-    <el-button type="primary" @click="changeConnectState">{{connectBtnStr}}</el-button>
+    <el-button type="primary" @click="changeConnectState">{{ connectBtnStr }}</el-button>
     <div class="dashboard-aix-test">Active Client Num: {{ activeClientNum }}</div>
     <div class="dashboard-aix-test">Online Client Num: {{ onlineClientNum }}</div>
     <br>
     <div display="flex">
-      <el-button type="primary" @click="changeLogState">{{logBtnStr}}</el-button>
+      <el-button type="primary" @click="changeLogState">{{ logBtnStr }}</el-button>
       <el-button type="primary" @click="jumpToELK">日志管理</el-button>
     </div>
     <!--    <el-input-->
@@ -26,7 +26,6 @@
         style="width:95%;height:550px;overflow:auto;white-space: pre-wrap;">
       <li v-for="i in logStr" :key="i" class="infinite-list-item">{{ i }}</li>
     </ul>
-
   </div>
 </template>
 
@@ -75,7 +74,6 @@ export default {
     },
     changeConnectState() {
       if (this.connected) {
-
         this.clearTimer()
         if (this.showLog) {
           server_api.serverLogStop()
@@ -87,7 +85,6 @@ export default {
         this.activeClientNum = 0
         this.onlineClientNum = 0
         this.connected = false
-
       } else {
         this.setTimer()
         this.connectBtnStr = '点击断开服务器'
@@ -97,7 +94,6 @@ export default {
     jumpToELK() {
       // window.location.href = 'http://10.214.211.205:5601/app/kibana#/discover'
       window.location.href = 'http://10.214.211.205:5601/app/logs'
-
     },
     getActiveClientNum() {
       client_api.getClientActiveNum().then(response => {
@@ -114,7 +110,6 @@ export default {
         if (res.data !== null && res.data !== '') {
           // console.log('收到' + res.data)
           this.logStr.push(res.data)
-
         }
       })
     },
@@ -160,20 +155,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .dashboard {
-    &-container {
-      margin: 30px;
-    }
-
-    &-text {
-      font-size: 30px;
-      line-height: 46px;
-    }
-
-    &-aix-test {
-      font-size: 30px;
-      line-height: 46px;
-    }
-
+.dashboard {
+  &-container {
+    margin: 30px;
   }
+
+  &-text {
+    font-size: 30px;
+    line-height: 46px;
+  }
+
+  &-aix-test {
+    font-size: 30px;
+    line-height: 46px;
+  }
+
+}
 </style>
