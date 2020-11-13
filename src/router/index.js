@@ -46,7 +46,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/example/table',
     children: [
       {
         path: 'dashboard',
@@ -67,13 +67,13 @@ export const constantRoutes = [
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: '活动容器列表', icon: 'table' }
+        meta: { title: '在线容器列表', icon: 'table' }
       },
       {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        meta: { title: '容器日志管理', icon: 'tree' }
       }
     ]
   },
@@ -154,7 +154,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'http://10.214.211.205:5601/app/metrics/detail/host/VIPA207',
+        path: 'http://http://10.214.211.205:5601/app/metrics/inventory',
         meta: { title: 'ES服务器监控', icon: 'link' }
       }
     ]

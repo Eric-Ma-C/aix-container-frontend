@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <h1>Client列表</h1>
+    <h1>在线容器列表</h1>
     <el-button type="primary" @click="fetchData">立即刷新</el-button>
     <br>
     <br>
@@ -60,7 +60,7 @@
 
       <el-table-column align="center" label="详情" width="105">
         <template slot-scope="scope">
-          <el-button type="primary" @click="jumpToManageDialog(scope.row)">管理</el-button>
+          <el-button type="primary" @click="jumpToManageDialog(scope.$index)">更多</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -78,15 +78,10 @@
           <el-link class="copyBtn" style="font-size: 17px; " :data-clipboard-text="dialogDeviceInfo.token">复制</el-link>
         </div>
       </div>
-      <div style="display: flex">
-        <div style="margin-right: 5px; font-size: 17px; ">执行指令:</div>
-        <div style="width: 60%; font-size: 17px; color: darkred;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{
-            dialogDeviceInfo.runningCmds
-          }}
-        </div>
-      </div>
-      <h3>任务详情</h3>
-      <el-table :data="dialogDeviceInfo.taskBriefInfoList">
+      <h3 v-if="dialogDeviceInfo.taskBriefInfoList.length > 0">任务详情</h3>
+      <el-table
+        v-if="dialogDeviceInfo.taskBriefInfoList.length > 0"
+        :data="dialogDeviceInfo.taskBriefInfoList">
         <el-table-column prop="name" label="名称" width="200"/>
         <el-table-column prop="type" label="类型" width="100"/>
         <el-table-column prop="accessType" label="权限" width="100"/>
@@ -94,7 +89,33 @@
         <el-table-column prop="createdTime" label="创建时间" width="230"/>
         <el-table-column prop="status" label="状态" width="100"/>
       </el-table>
+      <div style="display: flex; margin-top: 15px" v-if="dialogDeviceInfo.runningCmds != ''">
+        <div style="margin-top: 8px; margin-right: 5px; font-size: 17px; ">执行指令:</div>
+        <el-input
+          type="textarea"
+          style="width: 90%; font-size: 17px;"
+          color="darkred"
+          readonly="true"
+          resize="none"
+          :autosize="{ minRows: 1, maxRows: 5}"
+          v-model="dialogDeviceInfo.runningCmds">
+        </el-input>
+      </div>
+      <div style="display: flex; margin-top: 10px" v-if="dialogDeviceInfo.latestErrors != ''">
+        <div style="margin-top: 8px; margin-right: 5px; font-size: 17px; ">报错信息:</div>
+        <el-input
+          type="textarea"
+          style="width: 90%; font-size: 17px;"
+          color="darkred"
+          readonly="true"
+          resize="none"
+          :autosize="{ minRows: 1, maxRows: 12}"
+          v-model="dialogDeviceInfo.latestErrors">
+        </el-input>
+      </div>
       <el-button
+        style=" float:left;"
+        slot="footer"
         v-if="dialogDeviceInfo.taskBriefInfoList.length > 0"
         type="primary"
         @click="stopTask(dialogDeviceInfo.token)"
@@ -132,7 +153,8 @@ export default {
       autoRefreshTimer: null,
       closeWaitingTimer: null,
       dialogVisible: false,
-      dialogDeviceInfo: { name: 'unknown', runningCmds: 'N/A', taskBriefInfoList: [] },
+      dialogDeviceIndex: 0,
+      dialogDeviceInfo: { name: 'unknown', runningCmds: '', taskBriefInfoList: [], latestErrors: '' },
       listLoading: true
     }
   },
@@ -168,6 +190,11 @@ export default {
       // this.listLoading = true
       client_api.getClientList().then(response => {
         this.list = response.data.items
+        if (this.dialogDeviceIndex >= this.list.length) {
+          this.dialogDeviceInfo = { name: 'unknown', runningCmds: '', taskBriefInfoList: [], latestErrors: '' }
+        } else {
+          this.dialogDeviceInfo = this.list[this.dialogDeviceIndex]
+        }
         // this.listLoading = false
       })
     },
@@ -183,9 +210,10 @@ export default {
       clearInterval(this.autoRefreshTimer)
       this.autoRefreshTimer = null
     },
-    jumpToManageDialog(deviceInfo) {
+    jumpToManageDialog(index) {
       this.dialogVisible = true
-      this.dialogDeviceInfo = deviceInfo
+      this.dialogDeviceIndex = index
+      this.dialogDeviceInfo = this.list[index]
       // this.$router.push({
       //   path: `/detail/${token}`
       // })
