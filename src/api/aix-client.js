@@ -24,6 +24,22 @@ export function getClientList() {
   })
 }
 
+export function getTaskLogs(token) {
+  return request({
+    url: base_url + '/task-logs',
+    params: { token },
+    method: 'get'
+  })
+}
+
+export function getInfoById(id) {
+  return request({
+    url: base_url + '/info',
+    params: { id },
+    method: 'get'
+  })
+}
+
 export function getClientMsgQueue(token) {
   return request({
     url: base_url + '/msg_queue',

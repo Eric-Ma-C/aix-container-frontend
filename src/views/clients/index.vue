@@ -68,7 +68,7 @@
     <el-dialog
       :title="dialogDeviceInfo.name"
       :visible.sync="dialogVisible"
-      width="80%">
+      width="1100px">
       <!--      :before-close="handleClose">-->
       <div style="display: flex">
         <div style="margin-right: 5px; font-size: 17px; ">Token:</div>
@@ -131,7 +131,7 @@
 </template>
 
 <script>
-// import { getList } from '@/api/table'
+// import { getList } from '@/api/clients'
 import * as client_api from '../../api/aix-client'
 // import * as server_api from '../../api/aix-server'
 import ClipboardJS from 'clipboard'
@@ -203,7 +203,7 @@ export default {
         this.autoRefreshTimer = setInterval(() => {
           // console.log('开始定时...每过10秒执行一次')
           this.fetchData()
-        }, 10000)
+        }, 5000)
       }
     },
     clearTimer() {

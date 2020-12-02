@@ -46,7 +46,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/example/table',
+    redirect: '/example/clients',
     children: [
       {
         path: 'dashboard',
@@ -59,21 +59,21 @@ export const constantRoutes = [
   {
     path: '/example',
     component: Layout,
-    redirect: '/example/table',
+    redirect: '/example/clients',
     name: 'Example',
     meta: { title: '容器信息', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
+        path: 'clients',
+        name: 'Clients',
+        component: () => import('@/views/clients/index'),
         meta: { title: '在线容器列表', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: '容器日志管理', icon: 'tree' }
+        path: 'client-logs',
+        name: 'Client-logs',
+        component: () => import('@/views/client-logs/index'),
+        meta: { title: '容器日志', icon: 'tree' }
       }
     ]
   },
@@ -154,8 +154,8 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'http://http://10.214.211.205:5601/app/metrics/inventory',
-        meta: { title: 'ES服务器监控', icon: 'link' }
+        path: 'http://10.214.211.205:5601/app/metrics/inventory',
+        meta: { title: '容器运行状态', icon: 'link' }
       }
     ]
   },
@@ -163,7 +163,7 @@ export const constantRoutes = [
 
   {
     path: '/detail/:token',
-    component: () => import('@/views/client/cli-detail')
+    component: () => import('@/views/cli-detail/cli-detail')
   },
 
   // 404 page must be placed at the end !!!
