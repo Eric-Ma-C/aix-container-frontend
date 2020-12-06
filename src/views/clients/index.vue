@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <h1>在线容器列表</h1>
-    <el-button type="primary" @click="fetchData">立即刷新</el-button>
+    <el-button @click="fetchData">强制刷新</el-button>
     <br>
     <br>
 

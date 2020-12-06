@@ -10,7 +10,7 @@
         @oninput="refreshTime"
         @select="handleSelect">
       </el-autocomplete>
-      <el-button style="margin-left: 10px" type="primary" @click="getLog">查看</el-button>
+      <el-button style="margin-left: 10px" @click="getLog">强制刷新</el-button>
     </div>
 
     <div style="margin-top: 18px; margin-bottom: 15px; font-size: 17px; ">容器{{ id }}日志信息:</div>
