@@ -1,0 +1,14 @@
+Sending build context to Docker daemon  400.4kB
+Step 1/10 : FROM node:8.15.0 AS builder
+8.15.0: Pulling from library/node
+741437d97401: Already exists
+34d8874714d7: Already exists
+0a108aa26679: Already exists
+7f0334c36886: Already exists
+65c95cb8b3be: Pulling fs layer
+a36b708560f8: Pulling fs layer
+81a7e69fab67: Pulling fs layer
+a88b577be604: Pulling fs layer
+a88b577be604: Download complete
+a36b708560f8: Download complete
+81a7e69fab67: Download complete

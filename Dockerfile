@@ -1,5 +1,8 @@
   # resum Dockerfile
 
+
+  # 前端可以不用本镜像部署，可直接由nginx镜像部署编译好的dist文件夹
+
   #指定node镜像对项目进行依赖安装和打包
   FROM node:8.15.0 AS builder
   # 将容器的工作目录设置为/app(当前目录，如果/app不存在，WORKDIR会创建/app文件夹)
