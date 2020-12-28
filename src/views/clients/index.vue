@@ -29,6 +29,7 @@
             <el-table :data="scope.row.gpuInfo.gpus">
               <el-table-column prop="id" label="编号" width="55"/>
               <el-table-column prop="name" label="型号" width="150"/>
+              <el-table-column prop="calPower" label="算力" width="50"/>
               <el-table-column prop="temperature" label="温度" width="55"/>
               <el-table-column prop="powerDraw" label="当前功率" width="99"/>
               <el-table-column prop="powerLimit" label="最大功率" width="99"/>
