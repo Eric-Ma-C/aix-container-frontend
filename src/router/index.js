@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
-Vue.use(Router)
-
 /* Layout */
 import Layout from '@/layout'
+
+Vue.use(Router)
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -46,7 +45,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/example/clients',
+    redirect: '/clients/list',
     children: [
       {
         path: 'dashboard',
@@ -57,20 +56,20 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/clients',
     component: Layout,
-    redirect: '/example/clients',
-    name: 'Example',
-    meta: { title: '容器信息', icon: 'example' },
+    redirect: '/clients/list',
+    name: 'Clients',
+    meta: { title: '在线容器信息', icon: 'example' },
     children: [
       {
-        path: 'clients',
+        path: 'list',
         name: 'Clients',
         component: () => import('@/views/clients/index'),
-        meta: { title: '在线容器列表', icon: 'table' }
+        meta: { title: '容器列表', icon: 'table' }
       },
       {
-        path: 'client-logs',
+        path: 'logs',
         name: 'Client-logs',
         component: () => import('@/views/client-logs/index'),
         meta: { title: '容器日志', icon: 'tree' }
@@ -79,83 +78,76 @@ export const constantRoutes = [
   },
 
   {
-    path: '/form',
+    path: '/gpu',
     component: Layout,
+    redirect: '/gpu/list',
+    name: 'GPU',
+    meta: { title: 'GPU信息', icon: 'example' },
     children: [
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        path: 'list',
+        name: 'GPU List',
+        component: () => import('@/views/gpu/index'),
+        meta: { title: '在线GPU列表', icon: 'table' }
+      },
+      {
+        path: 'client-logs',
+        name: 'Client-logs',
+        component: () => import('@/views/client-logs/index'),
+        meta: { title: 'GPU概览', icon: 'tree' }
       }
     ]
   },
 
   {
-    path: '/nested',
+    path: '/device',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
+    redirect: '/device/list',
+    name: 'Device',
+    meta: { title: '设备管理', icon: 'form' },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: 'list',
+        name: 'Device List',
+        component: () => import('@/views/device/index'),
+        meta: { title: '注册设备列表', icon: 'table' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        path: 'client-logs',
+        name: 'Client-logs',
+        component: () => import('@/views/client-logs/index'),
+        meta: { title: '算力Token管理', icon: 'tree' }
       }
     ]
   },
-
+  {
+    path: '/environment',
+    component: Layout,
+    redirect: '/environment/known_error',
+    name: 'Environment',
+    meta: { title: '设置', icon: 'form' },
+    children: [
+      {
+        path: 'known_error',
+        name: 'Known Error',
+        component: () => import('@/views/known_error/index'),
+        meta: { title: '自动错误解析', icon: 'table' }
+      },
+      {
+        path: 'source',
+        name: 'Source',
+        component: () => import('@/views/source/index'),
+        meta: { title: '软件源配置', icon: 'tree' }
+      }
+    ]
+  },
   {
     path: 'external-link',
     component: Layout,
     children: [
       {
-        path: 'http://10.214.211.205:5601/app/metrics/inventory',
-        meta: { title: '容器运行状态', icon: 'link' }
+        path: 'http://10.214.211.205:5601/',
+        meta: { title: '平台日志管理', icon: 'link' }
       }
     ]
   },

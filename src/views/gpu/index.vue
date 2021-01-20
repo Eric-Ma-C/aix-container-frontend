@@ -6,9 +6,9 @@
     <br>
 
     <el-table
-      style="width: auto"
       v-loading="listLoading"
       :data="list"
+      width="100%"
       element-loading-text="Loading"
       border
       fit
@@ -18,10 +18,10 @@
       <el-table-column align="center" label="宿主IP" prop="hostIp" width="120"/>
       <el-table-column align="center" label="描述" prop="info" width="155"/>
       <el-table-column align="center" label="创建者ID" prop="userId" width="60"/>
-      <el-table-column align="center" label="活动时间" prop="since" width="100"/>
-      <el-table-column align="center" label="GPU驱动" prop="gpuInfo.driverVersion" width="80"/>
-      <el-table-column align="center" label="CUDA" prop="gpuInfo.cudaVersion" width="80"/>
-      <el-table-column align="center" label="GPU数量" width="90">
+      <el-table-column align="center" label="活动时间" prop="since" width="155"/>
+      <el-table-column align="center" label="GPU驱动版本" prop="gpuInfo.driverVersion" width="120"/>
+      <el-table-column align="center" label="CUDA版本" prop="gpuInfo.cudaVersion" width="120"/>
+      <el-table-column align="center" label="GPU数量" width="95">
         <template slot-scope="scope">
           <el-popover
             placement="right"
