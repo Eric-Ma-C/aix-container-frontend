@@ -48,3 +48,11 @@ export function insert(name, keywords, repairCmds) {
     method: 'post'
   })
 }
+
+export function deleteById(id) {
+  return request({
+    url: base_url + '/delete',
+    data: { id: id },
+    method: 'post'
+  })
+}

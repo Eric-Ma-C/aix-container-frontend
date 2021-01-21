@@ -1,6 +1,8 @@
 <template>
   <div class="app-container" style="display: flex; flex-direction:column; align-items:center">
     <h1 style="align-self: center">环境错误修复管理</h1>
+    <el-button @click="insertError">添加</el-button>
+    <br>
     <el-table
       style="width: auto"
       v-loading="listLoading"
@@ -10,9 +12,9 @@
       fit
       highlight-current-row>
       <el-table-column align="center" label="ID" prop="id" width="55"/>
-      <el-table-column align="center" label="错误名称" prop="name" width="65"/>
+      <el-table-column align="center" label="错误名称" prop="name" width="155"/>
       <el-table-column align="center" label="错误描述" prop="key_words" width="455"/>
-      <el-table-column align="center" label="修复指令" width="460">
+      <el-table-column align="center" label="修复指令" width="260">
         <template slot-scope="scope">
           <el-popover
             placement="right"
@@ -23,9 +25,12 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="105">
+      <el-table-column align="center" label="操作" width="200px">
         <template slot-scope="scope">
-          <el-button @click="jumpToManageDialog(scope.row)">修改</el-button>
+          <div style="display: flex">
+            <el-button @click="jumpToManageDialog(scope.row)">修改</el-button>
+            <el-button @click="deleteById(scope.row.id)">删除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -85,14 +90,41 @@
       </el-form>
     </el-dialog>
     <el-dialog
-      title="提示"
-      :visible.sync="dialogWorningVisible"
-      width="30%">
-      <span>请谨慎修改此部分配置!</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogWorningVisible = false">确 定</el-button>
-      </span>
+      title="添加"
+      :visible.sync="dialogInsertVisible"
+      width="1000px">
+      <el-form label-position="right" label-width="auto">
+        <el-form-item label="错误名称">
+          <el-input style="margin-right: 20px" v-model="insertErrorName"></el-input>
+        </el-form-item>
+        <el-form-item label="错误描述">
+          <el-input style="margin-right: 20px" v-model="insertKeyWords"></el-input>
+        </el-form-item>
+        <br/>
+        <el-form-item
+          v-for="(cmd, index) in insertRepairCmds"
+          :label="'修复指令' + index"
+          :key="index">
+          <div style="display: flex">
+            <el-input style="margin-right: 20px" v-model="insertRepairCmds[index]"></el-input>
+            <el-button style="margin-right: 50px" @click="removeInsertCmd(index)">删除</el-button>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="addInsertCmd">新增修复指令</el-button>
+        </el-form-item>
+        <el-button type="primary" @click="insertCmds">添加</el-button>
+      </el-form>
     </el-dialog>
+    <!--    <el-dialog-->
+    <!--      title="提示"-->
+    <!--      :visible.sync="dialogWorningVisible"-->
+    <!--      width="30%">-->
+    <!--      <span>请谨慎修改此部分配置!</span>-->
+    <!--      <span slot="footer" class="dialog-footer">-->
+    <!--        <el-button type="primary" @click="dialogWorningVisible = false">确 定</el-button>-->
+    <!--      </span>-->
+    <!--    </el-dialog>-->
   </div>
 </template>
 
@@ -108,10 +140,14 @@ export default {
       pageSize: 9,
       currentPage: 1,
       dialogVisible: false,
+      dialogInsertVisible: false,
       dialogWorningVisible: true,
       inputErrorName: '',
+      insertErrorName: '',
       inputKeyWords: '',
+      insertKeyWords: '',
       inputRepairCmds: [],
+      insertRepairCmds: [],
       dialogErrorId: -1
     }
   },
@@ -160,6 +196,49 @@ export default {
           this.refreshPage()
         })
     },
+    insertError() {
+      this.dialogInsertVisible = true
+    },
+    deleteById(id) {
+      this.$confirm('确认删除？')
+        .then(_ => {
+          known_error_api.deleteById(id)
+            .then(response => {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              this.refreshPage()
+            })
+        })
+        .catch(_ => {})
+    },
+    insertCmds() {
+      let canUpdate = true
+      for (var i = 0, len = this.insertRepairCmds.length; i < len; i++) {
+        if (this.insertRepairCmds[i].trim() === '') {
+          canUpdate = false
+          this.$message.error('不能有空指令!')
+          return
+        }
+      }
+      if (this.insertErrorName.trim() === '' || this.insertKeyWords.trim() === '') {
+        canUpdate = false
+        this.$message.error('不能有空字段!')
+      }
+      if (!canUpdate) {
+        return
+      }
+      known_error_api.insert(this.insertErrorName.trim(), this.insertKeyWords.trim(),
+        JSON.stringify(this.insertRepairCmds))
+        .then(response => {
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
+          this.refreshPage()
+        })
+    },
     jumpToManageDialog(knownError) {
       this.dialogVisible = true
       // this.dialogDeviceIndex = index
@@ -183,6 +262,14 @@ export default {
     },
     removeCmd(index) {
       this.inputRepairCmds.splice(index, 1)
+    },
+    removeInsertCmd(index) {
+      this.insertRepairCmds.splice(index, 1)
+    },
+    addInsertCmd() {
+      this.insertRepairCmds.push(
+        ''
+      )
     },
     addCmd() {
       this.inputRepairCmds.push(
