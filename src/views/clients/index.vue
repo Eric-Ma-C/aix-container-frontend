@@ -121,7 +121,7 @@
         slot="footer"
         v-if="dialogDeviceInfo.taskBriefInfoList.length > 0"
         type="primary"
-        @click="stopTask(dialogDeviceInfo.token)"
+        @click="stopTask(dialogDeviceInfo.token,dialogDeviceInfo.taskBriefInfoList[0].name)"
       >
         终止任务
       </el-button>
@@ -228,7 +228,8 @@ export default {
         name: 'Client-logs',
         params: {
           clientId: clientId
-        }})
+        }
+      })
     },
     handleClose(done) { // close dialog
       this.$confirm('确认关闭？')
@@ -237,15 +238,15 @@ export default {
         })
         .catch(_ => {})
     },
-    stopTask(token) {
+    stopTask(token, taskName) {
       this.$confirm('确认终止？')
         .then(_ => {
           client_api.stopTask(token)
-          this.fullScreenWaiting(token)
+          this.fullScreenWaiting(token, taskName)
         })
         .catch(_ => {})
     },
-    fullScreenWaiting(token) {
+    fullScreenWaiting(token, taskName) {
       const loading = this.$loading({
         lock: true,
         text: '正在停止，请稍后...',
@@ -257,10 +258,10 @@ export default {
           let task
           client_api.getClientTask(token).then(response => {
             task = response.data
-            if (task === null) {
-              this.fetchData()
+            if (task === null || task.name !== taskName) {
               this.dialogDeviceInfo.runningCmds = ''
               this.dialogDeviceInfo.taskBriefInfoList = []
+              this.fetchData()
               loading.close()
               clearInterval(this.closeWaitingTimer)
               this.closeWaitingTimer = null
