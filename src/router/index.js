@@ -64,7 +64,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'list',
-        name: 'Clients',
+        name: 'Lists',
         component: () => import('@/views/clients/index'),
         meta: { title: '容器列表', icon: 'table' }
       },
@@ -78,23 +78,23 @@ export const constantRoutes = [
   },
 
   {
-    path: '/gpu',
+    path: '/task',
     component: Layout,
-    redirect: '/gpu/list',
-    name: 'GPU',
-    meta: { title: 'GPU信息', icon: 'example' },
+    redirect: '/task/list',
+    name: 'Task',
+    meta: { title: '任务信息', icon: 'example' },
     children: [
       {
         path: 'list',
-        name: 'GPU List',
-        component: () => import('@/views/gpu/index'),
-        meta: { title: '在线GPU列表', icon: 'table' }
+        name: 'Task List',
+        component: () => import('@/views/task/index'),
+        meta: { title: '已结束任务列表', icon: 'table' }
       },
       {
         path: 'client-logs',
         name: 'Client-logs',
         component: () => import('@/views/client-logs/index'),
-        meta: { title: 'GPU概览', icon: 'tree' }
+        meta: { title: '任务统计', icon: 'tree' }
       }
     ]
   },
@@ -104,7 +104,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/device/list',
     name: 'Device',
-    meta: { title: '设备管理', icon: 'form' },
+    meta: { title: '设备管理', icon: 'form',roles: ['admin'] },
     children: [
       {
         path: 'list',
@@ -125,7 +125,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/environment/known_error',
     name: 'Environment',
-    meta: { title: '设置', icon: 'form' },
+    meta: { title: '设置', icon: 'form', roles: ['admin'] },
     children: [
       {
         path: 'known_error',
@@ -144,6 +144,7 @@ export const constantRoutes = [
   {
     path: 'external-link',
     component: Layout,
+    meta: { roles: ['admin'] },
     children: [
       {
         path: 'http://10.214.211.205:5601/',
@@ -165,7 +166,8 @@ export const constantRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  routes: constantRoutes,
+  mode: 'history' // 把Router的mode修改为history模式,VueRouter默认的模式为HASH模式
 })
 
 const router = createRouter()

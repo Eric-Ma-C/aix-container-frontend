@@ -10,11 +10,11 @@
       fit
       highlight-current-row>
       <el-table-column align="center" label="ID" prop="id" width="55"/>
-      <el-table-column align="center" label="名称" prop="device_name" width="65"/>
+      <el-table-column align="center" label="名称" prop="deviceName" width="65"/>
       <el-table-column align="center" label="描述" prop="info" width="155"/>
-      <el-table-column align="center" label="创建者ID" prop="user_id" width="60"/>
-      <el-table-column align="center" label="创建时间" prop="created_time" width="100"/>
-      <el-table-column align="center" label="活动时间" prop="last_login" width="100"/>
+      <el-table-column align="center" label="创建者ID" prop="userId" width="60"/>
+      <el-table-column align="center" label="创建时间" prop="createdTime" width="100"/>
+      <el-table-column align="center" label="活动时间" prop="lastLogin" width="100"/>
       <el-table-column align="center" label="GPU驱动" prop="driverVersion" width="90"/>
       <el-table-column align="center" label="CUDA版本" prop="cudaVersion" width="90"/>
       <el-table-column align="center" label="GPU数量" width="95">
@@ -55,10 +55,10 @@
       width="1000px">
       <el-form label-position="right" label-width="auto">
         <el-form-item style="margin-right: 450px" label="ID">
-          <el-input  v-model="dialogDeviceInfo.id" :disabled="true"></el-input>
+          <el-input v-model="dialogDeviceInfo.id" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item style="margin-right: 450px" label="创建用户ID">
-          <el-input  v-model="dialogDeviceInfo.user_id" :disabled="true"></el-input>
+          <el-input v-model="dialogDeviceInfo.userId" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="名称">
           <div style="display: flex">
@@ -73,22 +73,22 @@
           </div>
         </el-form-item>
         <el-form-item label="Token">
-            <el-input style="margin-right: 0px" v-model="dialogDeviceInfo.token" :disabled="true"></el-input>
+          <el-input style="margin-right: 0px" v-model="dialogDeviceInfo.token" :disabled="true"></el-input>
         </el-form-item>
       </el-form>
 
-<!--      <div style="display: flex">-->
-<!--        <div style="margin-right: 5px; font-size: 17px; ">Token:</div>-->
-<!--        <div><span style="font-size: 17px; color: darkred; margin-right: 20px;">{{ dialogDeviceInfo.token }}</span>-->
-<!--        </div>-->
-<!--        <div>-->
-<!--          <el-link class="copyBtn" style="font-size: 17px; " :data-clipboard-text="dialogDeviceInfo.token">复制</el-link>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <span slot="footer" class="dialog-footer">-->
-<!--        <el-button @click="dialogVisible = false">取 消</el-button>-->
-<!--        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
-<!--      </span>-->
+      <!--      <div style="display: flex">-->
+      <!--        <div style="margin-right: 5px; font-size: 17px; ">Token:</div>-->
+      <!--        <div><span style="font-size: 17px; color: darkred; margin-right: 20px;">{{ dialogDeviceInfo.token }}</span>-->
+      <!--        </div>-->
+      <!--        <div>-->
+      <!--          <el-link class="copyBtn" style="font-size: 17px; " :data-clipboard-text="dialogDeviceInfo.token">复制</el-link>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <span slot="footer" class="dialog-footer">-->
+      <!--        <el-button @click="dialogVisible = false">取 消</el-button>-->
+      <!--        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
+      <!--      </span>-->
     </el-dialog>
   </div>
 </template>
@@ -107,7 +107,7 @@ export default {
       dialogVisible: false,
       inputDeviceName: '',
       inputDeviceInfo: '',
-      dialogDeviceInfo: { device_name: 'unknown', id: '', user_id: '', info: '', token: '' }
+      dialogDeviceInfo: { deviceName: 'unknown', id: '', userId: '', info: '', token: '' }
     }
   },
   methods: {
@@ -127,7 +127,7 @@ export default {
       this.dialogVisible = true
       // this.dialogDeviceIndex = index
       this.dialogDeviceInfo = device
-      this.inputDeviceName = device.device_name
+      this.inputDeviceName = device.deviceName
       this.inputDeviceInfo = device.info
       // this.$router.push({
       //   path: `/detail/${token}`
@@ -138,6 +138,10 @@ export default {
       this.refreshPage()
     },
     refreshPage() {
+      device_api.getDeviceCount().then(response => {
+        this.totalCount = response.data
+      })
+
       device_api.getClientListByPage(this.currentPage, this.pageSize).then(response => {
         this.list = response.data
         this.listLoading = false

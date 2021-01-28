@@ -60,9 +60,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="详情" width="105">
+      <el-table-column align="center" label="详情" width="205">
         <template slot-scope="scope">
           <el-button type="primary" @click="jumpToManageDialog(scope.$index)">更多</el-button>
+          <el-button @click="jumpToLogs(scope.row.id)">实时日志</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -220,6 +221,15 @@ export default {
       //   path: `/detail/${token}`
       // })
     },
+    jumpToLogs(clientId) {
+      // this.$router.push({ path: 'clients/logs?clientId=' + clientId })
+      this.$router.push({
+        // path: '/clients/logs',
+        name: 'Client-logs',
+        params: {
+          clientId: clientId
+        }})
+    },
     handleClose(done) { // close dialog
       this.$confirm('确认关闭？')
         .then(_ => {
@@ -234,9 +244,6 @@ export default {
           this.fullScreenWaiting(token)
         })
         .catch(_ => {})
-    },
-    jumpToLog() {
-
     },
     fullScreenWaiting(token) {
       const loading = this.$loading({
@@ -263,7 +270,7 @@ export default {
               })
             }
           })
-        }, 2000)
+        }, 3000)
       }
     },
     copySuccess() {

@@ -13,15 +13,15 @@
       highlight-current-row>
       <el-table-column align="center" label="ID" prop="id" width="55"/>
       <el-table-column align="center" label="错误名称" prop="name" width="155"/>
-      <el-table-column align="center" label="错误描述" prop="key_words" width="455"/>
+      <el-table-column align="center" label="错误描述" prop="keyWords" width="455"/>
       <el-table-column align="center" label="修复指令" width="260">
         <template slot-scope="scope">
           <el-popover
             placement="right"
             width="100%"
             trigger="hover">
-            <p v-for="cmd in scope.row.repair_cmds">{{ cmd }}</p>
-            <el-button slot="reference">{{ scope.row.repair_cmds }}</el-button>
+            <p v-for="cmd in scope.row.repairCmds">{{ cmd }}</p>
+            <el-button slot="reference">{{ scope.row.repairCmds }}</el-button>
           </el-popover>
         </template>
       </el-table-column>
@@ -57,8 +57,14 @@
         </el-form-item>
         <el-form-item label="错误描述">
           <div style="display: flex">
-            <el-input style="margin-right: 20px" v-model="inputKeyWords"></el-input>
-            <el-button style="margin-right: 250px" size="small" @click="updateKeywords">修改描述</el-button>
+            <el-input
+              type="textarea"
+              style="margin-right: 20px"
+              :autosize="{ minRows: 3, maxRows: 7}"
+              maxlength="1000"
+              v-model="inputKeyWords">
+            </el-input>
+            <el-button style="height: 35px; margin-right: 50px" size="small" @click="updateKeywords">修改描述</el-button>
           </div>
         </el-form-item>
         <br/>
@@ -68,7 +74,7 @@
           :key="index">
           <div style="display: flex">
             <el-input style="margin-right: 20px" v-model="inputRepairCmds[index]"></el-input>
-            <el-button style="margin-right: 50px" @click="removeCmd(index)">删除</el-button>
+            <el-button style="margin-right: 150px" @click="removeCmd(index)">删除</el-button>
           </div>
         </el-form-item>
         <!--        <el-form-item-->
@@ -95,10 +101,16 @@
       width="1000px">
       <el-form label-position="right" label-width="auto">
         <el-form-item label="错误名称">
-          <el-input style="margin-right: 20px" v-model="insertErrorName"></el-input>
+          <el-input style="width: 50%" v-model="insertErrorName"></el-input>
         </el-form-item>
         <el-form-item label="错误描述">
-          <el-input style="margin-right: 20px" v-model="insertKeyWords"></el-input>
+          <el-input
+            type="textarea"
+            style="margin-right: 20px"
+            :autosize="{ minRows: 3, maxRows: 7}"
+            maxlength="1000"
+            v-model="insertKeyWords">
+          </el-input>
         </el-form-item>
         <br/>
         <el-form-item
@@ -244,8 +256,8 @@ export default {
       // this.dialogDeviceIndex = index
       this.dialogErrorId = knownError.id
       this.inputErrorName = knownError.name
-      this.inputKeyWords = knownError.key_words
-      this.inputRepairCmds = knownError.repair_cmds.slice()
+      this.inputKeyWords = knownError.keyWords
+      this.inputRepairCmds = knownError.repairCmds.slice()
       // this.$router.push({
       //   path: `/detail/${token}`
       // })
@@ -255,6 +267,9 @@ export default {
       this.refreshPage()
     },
     refreshPage() {
+      known_error_api.getErrorCount().then(response => {
+        this.totalCount = response.data
+      })
       known_error_api.getErrorListByPage(this.currentPage, this.pageSize).then(response => {
         this.list = response.data
         this.listLoading = false
