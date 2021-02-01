@@ -16,11 +16,15 @@
       <el-table-column align="center" label="开始时间" prop="begin" width="100"/>
       <el-table-column align="center" label="结束时间" prop="end" width="100"/>
       <el-table-column align="center" label="持续时长(分钟)" prop="durationMin" width="90"/>
-      <el-table-column align="center" label="任务日志" prop="logs" width="500" show-overflow-tooltip/>
+      <el-table-column align="center" label="任务日志"  width="500">
+        <template slot-scope="scope">
+          <span>{{scope.row.logs | ellipsis}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="操作" width="205">
         <template slot-scope="scope">
           <el-button @click="deleteById(scope.row.id)">删除</el-button>
-          <el-button @click="showLog(scope.row.logs)">日志</el-button>
+          <el-button @click="showLog(scope.row.logs)">完整日志</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,6 +65,15 @@ export default {
       currentPage: 1,
       logs: '',
       dialogVisible: false
+    }
+  },
+  filters: {
+    ellipsis(value) {
+      if (!value) return ''
+      if (value.length > 60) {
+        return value.slice(0, 60) + '...'
+      }
+      return value
     }
   },
   methods: {
