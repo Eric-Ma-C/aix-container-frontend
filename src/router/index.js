@@ -104,7 +104,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/device/list',
     name: 'Device',
-    meta: { title: '设备管理', icon: 'form',roles: ['admin'] },
+    meta: { title: '设备管理', icon: 'form', roles: ['admin'] },
     children: [
       {
         path: 'list',
@@ -134,10 +134,16 @@ export const constantRoutes = [
         meta: { title: '自动错误解析', icon: 'table' }
       },
       {
-        path: 'source',
-        name: 'Source',
-        component: () => import('@/views/source/index'),
-        meta: { title: '软件源配置', icon: 'tree' }
+        path: 'pip',
+        name: 'Pip',
+        component: () => import('@/views/pip_source/index'),
+        meta: { title: 'PIP源配置', icon: 'tree' }
+      },
+      {
+        path: 'apt',
+        name: 'Apt',
+        component: () => import('@/views/apt_source/index'),
+        meta: { title: 'APT源配置', icon: 'tree' }
       }
     ]
   },
