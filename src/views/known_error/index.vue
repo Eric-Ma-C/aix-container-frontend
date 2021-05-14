@@ -178,12 +178,20 @@ export default {
     updateName() {
       known_error_api.updateNameById(this.dialogErrorId + '', this.inputErrorName)
         .then(response => {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
           this.refreshPage()
         })
     },
     updateKeywords() {
       known_error_api.updateKeywordsById(this.dialogErrorId + '', this.inputKeyWords)
         .then(response => {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
           this.refreshPage()
         })
     },
